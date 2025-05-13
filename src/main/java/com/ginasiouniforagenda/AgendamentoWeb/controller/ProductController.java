@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -36,5 +37,11 @@ public class ProductController {
         return ResponseEntity.ok(productResponseDTO);
     }
 
+    @GetMapping
+    public ResponseEntity getAllProducts(){
+        List<ProductResponseDTO> productResponseDTOList = this.productRepository.findAll().stream().map(ProductResponseDTO::new).toList();
+
+        return ResponseEntity.ok(productResponseDTOList);
+    }
 
 }

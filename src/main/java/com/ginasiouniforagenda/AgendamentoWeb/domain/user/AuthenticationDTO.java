@@ -1,4 +1,4 @@
 package com.ginasiouniforagenda.AgendamentoWeb.domain.user;
 
-public record AuthenticationDTO(String login, String passoword) {
+public record AuthenticationDTO(String login, String password) {
 }

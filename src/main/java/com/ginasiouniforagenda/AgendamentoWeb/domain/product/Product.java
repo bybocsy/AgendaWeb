@@ -3,6 +3,8 @@ package com.ginasiouniforagenda.AgendamentoWeb.domain.product;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.UUID;
+
 @Entity(name = "product")
 @Table(name = "product")
 @Getter
@@ -13,7 +15,7 @@ import lombok.*;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     private String name;
 
