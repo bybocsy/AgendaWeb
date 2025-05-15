@@ -1,5 +1,6 @@
 package com.ginasiouniforagenda.AgendamentoWeb.infra.security;
 
+import com.ginasiouniforagenda.AgendamentoWeb.domain.user.UserRole;
 import com.ginasiouniforagenda.AgendamentoWeb.repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
