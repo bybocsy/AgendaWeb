@@ -30,15 +30,21 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProductResponseDTO> getProduct(@PathVariable("id") String id){
-        Product productBanco = productRepository.findById(id).orElseThrow();
+    @GetMapping("/{name}")
+    public ResponseEntity<List<ProductResponseDTO>> getProductByName(@PathVariable("name") String name) {
+        List<ProductResponseDTO> productResponseDTOList = productRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(ProductResponseDTO::new)
+                .toList();
 
-        ProductResponseDTO productResponseDTO = new ProductResponseDTO(productBanco);
-        return ResponseEntity.ok(productResponseDTO);
+        if (productResponseDTOList.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(productResponseDTOList);
     }
 
-    @GetMapping
+    @GetMapping("/listagem")
     public ResponseEntity getAllProducts(){
         List<ProductResponseDTO> productResponseDTOList = this.productRepository.findAll().stream().map(ProductResponseDTO::new).toList();
 

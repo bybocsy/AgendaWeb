@@ -29,7 +29,7 @@ public class AuthenticantionController {
     private AuthenticationManager authenticationManager;
 
     @Autowired
-    private UserRepository userRepository;
+    private UserRepository repository;
 
     @Autowired
     TokenService tokenService;
@@ -50,13 +50,13 @@ public class AuthenticantionController {
 
     @PostMapping("/register")
     public ResponseEntity register(@RequestBody @Valid RegisterDTO data){
-        if(this.userRepository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
+        if(this.repository.findByLogin(data.login()) != null) return ResponseEntity.badRequest().build();
 
         String encryptedPassword = new BCryptPasswordEncoder().encode(data.password());
 
         User newUser = new User(data.login(), data.email(), encryptedPassword, data.role());
 
-        this.userRepository.save(newUser);
+        this.repository.save(newUser);
 
         return ResponseEntity.ok().build();
     }

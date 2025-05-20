@@ -26,26 +26,26 @@ public class TokenService {
                     .withExpiresAt(genExpirationDate())
                     .sign(algorithm);
             return token;
-        } catch (JWTCreationException e){
-            throw new RuntimeException("Error while generating token", e);
+        } catch (JWTCreationException exception) {
+            throw new RuntimeException("Error while generating token", exception);
         }
     }
 
     public String validateToken(String token){
-        try{
+        try {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.require(algorithm)
                     .withIssuer("auth-api")
                     .build()
                     .verify(token)
                     .getSubject();
-        } catch (JWTVerificationException e){
+        } catch (JWTVerificationException exception){
             return "";
         }
     }
 
     private Instant genExpirationDate(){
-        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of(("-03:00")));
+        return LocalDateTime.now().plusHours(2).toInstant(ZoneOffset.of("-03:00"));
     }
 }
 
