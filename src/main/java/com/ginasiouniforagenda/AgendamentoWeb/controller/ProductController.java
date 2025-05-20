@@ -30,7 +30,7 @@ public class ProductController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/nome/{name}")
     public ResponseEntity<List<ProductResponseDTO>> getProductByName(@PathVariable("name") String name) {
         List<ProductResponseDTO> productResponseDTOList = productRepository.findByNameContainingIgnoreCase(name)
                 .stream()
@@ -41,6 +41,19 @@ public class ProductController {
             return ResponseEntity.noContent().build();
         }
 
+        return ResponseEntity.ok(productResponseDTOList);
+    }
+
+    @GetMapping("/categoria/{category}")
+    public ResponseEntity<List<ProductResponseDTO>> getProductByCategory(@PathVariable("category") String category) {
+        List<ProductResponseDTO> productResponseDTOList = productRepository.findByCategoryContainingIgnoreCase(category)
+                .stream()
+                .map(ProductResponseDTO::new)
+                .toList();
+
+        if (productResponseDTOList.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
         return ResponseEntity.ok(productResponseDTOList);
     }
 

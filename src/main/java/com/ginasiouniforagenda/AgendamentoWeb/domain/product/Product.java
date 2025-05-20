@@ -23,9 +23,12 @@ public class Product {
 
     private String description;
 
+    private String category;
+
     public Product(ProductRequestDTO data){
         this.price = data.price();
         this.name = data.name();
         this.description = data.description();
+        this.category = data.category();
     }
 }
