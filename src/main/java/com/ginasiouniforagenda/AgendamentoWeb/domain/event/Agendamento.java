@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
@@ -29,7 +30,7 @@ public class Agendamento {
     private boolean isFixed;
 
     @Column(nullable = false)
-    private Date date;
+    private LocalDateTime dateTime;
 
     private String description;
 
@@ -39,7 +40,7 @@ public class Agendamento {
     public Agendamento(AgendamentoRequestDTO data) {
         this.place = data.place();
         this.isFixed = data.isFixed();
-        this.date = data.date();
+        this.dateTime = data.dateTime();
         this.description = data.description();
         this.responsible = data.responsible();
     }

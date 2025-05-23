@@ -16,7 +16,10 @@ public record ProductRequestDTO(
         String description,
 
         @NotBlank
-        String category
+        String category,
+
+        @NotNull
+        Long stock
 
 ) {
     }

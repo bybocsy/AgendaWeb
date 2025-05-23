@@ -15,7 +15,7 @@ import java.util.UUID;
 public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     private String name;
 
@@ -25,10 +25,13 @@ public class Product {
 
     private String category;
 
+    private Long stock;
+
     public Product(ProductRequestDTO data){
         this.price = data.price();
         this.name = data.name();
         this.description = data.description();
         this.category = data.category();
+        this.stock = data.stock();
     }
 }

@@ -1,5 +1,6 @@
 package com.ginasiouniforagenda.AgendamentoWeb.controller;
 
+import com.ginasiouniforagenda.AgendamentoWeb.domain.product.BuyProductRequestDTO;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.product.Product;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.product.ProductRequestDTO;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.product.ProductResponseDTO;
@@ -26,6 +27,26 @@ public class ProductController {
         Product newProduct = new Product(body);
 
         this.productRepository.save(newProduct);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/comprar")
+    public ResponseEntity buyProduct(@RequestBody BuyProductRequestDTO compra){
+        Optional<Product> productOptional = productRepository.findById(compra.id());
+
+        if (productOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        Product product = productOptional.get();
+
+        if (product.getStock() < compra.qtyPurchased()) {
+            return ResponseEntity.badRequest().body("Estoque insuficiente");
+        }
+
+        product.setStock(product.getStock() - compra.qtyPurchased());
+        productRepository.save(product);
 
         return ResponseEntity.ok().build();
     }

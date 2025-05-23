@@ -1,16 +1,15 @@
 package com.ginasiouniforagenda.AgendamentoWeb.domain.event;
 
 import jakarta.validation.constraints.NotBlank;
-import org.antlr.v4.runtime.misc.NotNull;
-
-import java.util.Date;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 public record AgendamentoRequestDTO(
         @NotBlank
         String place,
 
         @NotNull
-        Date date,
+        LocalDateTime dateTime,
 
         @NotNull
         Boolean isFixed,
@@ -19,5 +18,5 @@ public record AgendamentoRequestDTO(
 
         @NotBlank
         String responsible
-) {
-}
+) {}
+
