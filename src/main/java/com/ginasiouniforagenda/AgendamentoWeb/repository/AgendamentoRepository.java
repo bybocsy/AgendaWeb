@@ -11,6 +11,5 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, UUID> 
     List<Agendamento> findByPlaceContainingIgnoreCase(String place);
     List<Agendamento> findByDateTime(LocalDateTime dateTime);
     boolean existsByDateTimeAndPlace(LocalDateTime dateTime, String place);
-    //AAAAAA
     List<Agendamento> findByDateTimeBetween(LocalDateTime start, LocalDateTime end);
 }

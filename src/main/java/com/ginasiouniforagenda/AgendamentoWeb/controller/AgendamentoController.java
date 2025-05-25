@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/agendamento")
@@ -72,7 +73,7 @@ public class AgendamentoController {
 
         return ResponseEntity.ok(agendamentoResponseDTOList);
     }
-    //UM TESTE MT MALUCO, SE DER ERRADO APAGUE
+
     @GetMapping("/mes/{year}/{month}")
     public ResponseEntity<List<AgendamentoResponseDTO>> getAgendamentoByMonth(
             @PathVariable("year") int year,
@@ -98,4 +99,26 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentoResponseDTOList);
     }
 
+    //falta edit(update)
+
+    //DELETEEEEEEEEE!!!!!!
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteAgendamento(@PathVariable("id") UUID id) {
+        try{
+            if(!agendamentoRepository.existsById(id)){
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body("Agendamento não encontrado com o ID: " + id);
+            }
+
+            agendamentoRepository.deleteById(id);
+
+            return ResponseEntity
+                    .ok("Agendamento com ID " + id + " foi deletado com sucesso.");
+        } catch(Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao deletar agendamento" + e.getMessage());
+        }
+    }
 }
