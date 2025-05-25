@@ -3,9 +3,6 @@ package com.ginasiouniforagenda.AgendamentoWeb.controller;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.event.Agendamento;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.event.AgendamentoRequestDTO;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.event.AgendamentoResponseDTO;
-import com.ginasiouniforagenda.AgendamentoWeb.domain.product.Product;
-import com.ginasiouniforagenda.AgendamentoWeb.domain.product.ProductRequestDTO;
-import com.ginasiouniforagenda.AgendamentoWeb.domain.product.ProductResponseDTO;
 import com.ginasiouniforagenda.AgendamentoWeb.repository.AgendamentoRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,6 +62,31 @@ public class AgendamentoController {
 
         List<AgendamentoResponseDTO> agendamentoResponseDTOList = agendamentoRepository
                 .findByDateTime(dateTime)
+                .stream()
+                .map(AgendamentoResponseDTO::new)
+                .toList();
+
+        if (agendamentoResponseDTOList.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(agendamentoResponseDTOList);
+    }
+    //UM TESTE MT MALUCO, SE DER ERRADO APAGUE
+    @GetMapping("/mes/{year}/{month}")
+    public ResponseEntity<List<AgendamentoResponseDTO>> getAgendamentoByMonth(
+            @PathVariable("year") int year,
+            @PathVariable("month") int month) {
+
+        if (month < 1 || month > 12) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime endDate = startDate.plusMonths(1).minusSeconds(1);
+
+        List<AgendamentoResponseDTO> agendamentoResponseDTOList = agendamentoRepository
+                .findByDateTimeBetween(startDate, endDate)
                 .stream()
                 .map(AgendamentoResponseDTO::new)
                 .toList();
