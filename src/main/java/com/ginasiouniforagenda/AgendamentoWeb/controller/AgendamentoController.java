@@ -1,11 +1,9 @@
 package com.ginasiouniforagenda.AgendamentoWeb.controller;
 
+import com.ginasiouniforagenda.AgendamentoWeb.AgendamentoWebApplication;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.event.Agendamento;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.event.AgendamentoRequestDTO;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.event.AgendamentoResponseDTO;
-import com.ginasiouniforagenda.AgendamentoWeb.domain.product.Product;
-import com.ginasiouniforagenda.AgendamentoWeb.domain.product.ProductRequestDTO;
-import com.ginasiouniforagenda.AgendamentoWeb.domain.product.ProductResponseDTO;
 import com.ginasiouniforagenda.AgendamentoWeb.repository.AgendamentoRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +14,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/agendamento")
@@ -26,9 +26,9 @@ public class AgendamentoController {
 
     @PostMapping("/cadastro")
     public ResponseEntity postAgendamento(@RequestBody @Valid AgendamentoRequestDTO body){
-        boolean existe = agendamentoRepository.existsByDateTimeAndPlace(body.dateTime(), body.place());
+        boolean exist = agendamentoRepository.existsByDateTimeAndPlace(body.dateTime(), body.place());
 
-        if (existe) {
+        if (exist) {
             return ResponseEntity
                     .status(HttpStatus.CONFLICT)
                     .body("Já existe um evento cadastrado nesse local e horário.");
@@ -76,4 +76,65 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentoResponseDTOList);
     }
 
+    @GetMapping("/mes/{year}/{month}")
+    public ResponseEntity<List<AgendamentoResponseDTO>> getAgendamentoByMonth(
+            @PathVariable("year") int year,
+            @PathVariable("month") int month) {
+
+        if (month < 1 || month > 12) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        LocalDateTime startDate = LocalDateTime.of(year, month, 1, 0, 0);
+        LocalDateTime endDate = startDate.plusMonths(1).minusSeconds(1);
+
+        List<AgendamentoResponseDTO> agendamentoResponseDTOList = agendamentoRepository
+                .findByDateTimeBetween(startDate, endDate)
+                .stream()
+                .map(AgendamentoResponseDTO::new)
+                .toList();
+
+        if (agendamentoResponseDTOList.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(agendamentoResponseDTOList);
+    }
+
+    //falta edit(update)
+
+    //DELETEEEEEEEEE!!!!!!
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity deleteAgendamento(@PathVariable("id") UUID id) {
+        try{
+            if(!agendamentoRepository.existsById(id)){
+                return ResponseEntity
+                        .status(HttpStatus.NOT_FOUND)
+                        .body("Agendamento não encontrado com o ID: " + id);
+            }
+
+            agendamentoRepository.deleteById(id);
+
+            return ResponseEntity
+                    .ok("Agendamento com ID " + id + " foi deletado com sucesso.");
+        } catch(Exception e){
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Erro ao deletar agendamento" + e.getMessage());
+        }
+    }
+
+    @PutMapping("/edit/{id}")
+    public ResponseEntity editAgendamento(@PathVariable("id") UUID id, @RequestBody @Valid AgendamentoRequestDTO body){
+        Optional<Agendamento> agendamento = agendamentoRepository.findById(id);
+        if (agendamento.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+        Agendamento newAgendamento = new Agendamento(body);
+        newAgendamento.setDateTime(body.dateTime());
+        newAgendamento.setResponsible(body.responsible());
+
+        this.agendamentoRepository.save(newAgendamento);
+        return ResponseEntity.ok("Evento editado com sucesso");
+    }
 }

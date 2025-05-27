@@ -1,25 +1,18 @@
 package com.ginasiouniforagenda.AgendamentoWeb.controller;
 
-import com.ginasiouniforagenda.AgendamentoWeb.domain.product.ProductResponseDTO;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.user.AuthenticationDTO;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.user.RegisterDTO;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.user.User;
 import com.ginasiouniforagenda.AgendamentoWeb.infra.security.TokenService;
-import com.ginasiouniforagenda.AgendamentoWeb.repository.ProductRepository;
 import com.ginasiouniforagenda.AgendamentoWeb.repository.UserRepository;
 import jakarta.validation.Valid;
-import org.aspectj.weaver.patterns.ITokenSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/auth")

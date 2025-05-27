@@ -38,8 +38,7 @@ public class SecurityConfigurations {
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/produto/comprar").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/produto/cadastro").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/edit/{id}").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/agendamento/cadastro").hasRole("ADMIN")
                         .anyRequest().authenticated()
 
