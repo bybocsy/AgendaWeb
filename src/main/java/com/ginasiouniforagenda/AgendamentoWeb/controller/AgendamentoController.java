@@ -98,10 +98,30 @@ public class AgendamentoController {
 
         return ResponseEntity.ok(agendamentoResponseDTOList);
     }
+    
+    @PutMapping("/edit/{id}")
+    public ResponseEntity<?> editarAgendamento(
+            @PathVariable UUID id,
+            @RequestBody @Valid AgendamentoRequestDTO editedAgendamento){
 
-    //falta edit(update)
+        if(!agendamentoRepository.existsById(id)){
+            return ResponseEntity.notFound().build();
+        }
 
-    //DELETEEEEEEEEE!!!!!!
+        if(agendamentoRepository.existsByDateTimeAndPlaceAndIdNot(
+                editedAgendamento.dateTime(),
+                editedAgendamento.place(),
+                id)){
+            return ResponseEntity.status(HttpStatus.CONFLICT)
+                    .body("Já existe outro agendamento neste local e horário.");
+
+        }
+        Agendamento agendamentoAtualizado = new Agendamento(editedAgendamento);
+        agendamentoAtualizado.setId(id);
+        agendamentoRepository.save(agendamentoAtualizado);
+        return ResponseEntity.ok(new AgendamentoResponseDTO(agendamentoAtualizado));
+    }
+
     @DeleteMapping("/delete/{id}")
     public ResponseEntity deleteAgendamento(@PathVariable("id") UUID id) {
         try{
