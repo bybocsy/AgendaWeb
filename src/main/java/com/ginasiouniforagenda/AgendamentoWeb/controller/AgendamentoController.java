@@ -98,7 +98,7 @@ public class AgendamentoController {
 
         return ResponseEntity.ok(agendamentoResponseDTOList);
     }
-    
+
     @PutMapping("/edit/{id}")
     public ResponseEntity<?> editarAgendamento(
             @PathVariable UUID id,

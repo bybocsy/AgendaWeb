@@ -1,10 +1,11 @@
 package com.ginasiouniforagenda.AgendamentoWeb.infra.security;
 
-
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import com.ginasiouniforagenda.AgendamentoWeb.domain.user.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,12 +31,14 @@ public class SecurityConfigurations {
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .headers(headers -> headers
-                        .frameOptions(frameOptions -> frameOptions.sameOrigin()) // Libera uso de frames
+                        .frameOptions(frameOptions -> frameOptions.sameOrigin())
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/agendamento/listagem").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/h2-console/**").permitAll()
                         .requestMatchers(HttpMethod.POST, "/produto/comprar").permitAll()
@@ -47,19 +50,6 @@ public class SecurityConfigurations {
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
-
-//    public SecurityFilterChain seecurityFilterChain(HttpSecurity httpSecurity) throws Exception {
-//        return httpSecurity
-//                .csrf(csrf -> csrf.disable())
-//                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-//                .authorizeHttpRequests(authorize -> authorize
-//                                       .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-//                                       .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
-//                                       .requestMatchers(HttpMethod.POST, "/product").hasRole("ADMIN")
-//                                       .anyRequest().authenticated()
-//                )
-//                .build();
-//    }
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
@@ -73,5 +63,16 @@ public class SecurityConfigurations {
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED);
+    }
+
+    @Configuration
+    public class CorsConfig implements WebMvcConfigurer {
+
+        @Override
+        public void addCorsMappings(CorsRegistry registry) {
+            registry.addMapping("/**")
+                    .allowedOrigins("http://localhost:4200", "http://26.4.134.90:8081","http://26.4.134.90:8081/login") // ADICIONE A ORIGEM DO FRONTEND AQUI
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "TRACE", "CONNECT");
+        }
     }
 }
